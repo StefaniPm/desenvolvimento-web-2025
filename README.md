@@ -1,4 +1,4 @@
-# [Título do seu projeto]
+# Triagem+ - Fila de Prioridade para Triagem Hospitalar
 <!-- EXEMPLO: "AtendeAí — Fila de Ajuda em Sala" -->
 
 ## 1) Problema
