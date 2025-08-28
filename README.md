@@ -71,15 +71,12 @@ Critérios de aceite:
 - Impressão da fila mostra todos em ordem correta.
 
 ## 7) Esboços de algumas telas (wireframes)
-<!-- Vale desenho no papel (foto), Figma, Excalidraw, etc. Não precisa ser bonito, precisa ser claro.
-     EXEMPLO de telas:
-     • Login
-     • Lista de chamados (ordem + tempo desde criação)
-     • Novo chamado (formulário simples)
-     • Painel do professor (atender/encerrar)
-     EXEMPLO de imagem:
-     ![Wireframe - Lista de chamados](img/wf-lista-chamados.png) -->
-[Links ou imagens dos seus rascunhos de telas aqui]
+
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
 
 ## 8) Tecnologias
 <!-- Liste apenas o que você REALMENTE pretende usar agora. -->
