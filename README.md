@@ -107,40 +107,98 @@ Back-end (API): Node.js com Express.js (para a criação da API RESTful) Banco d
 ### 9.2 Campos por entidade
 
 
-### Usuário
-| Campo           | Tipo                          | Obrigatório | Exemplo            |
-|-----------------|-------------------------------|-------------|--------------------|
-| id              | número                        | sim         | 1                  |
-| nome            | texto                         | sim         | "Ana Pires"        |
-| email           | texto                         | sim (único) | "ana@hospital.com" |
-| senha_hash      | texto                         | sim         | "$2a$10$..."       |
-| papel           | (0=recepcionista, 1=médico)   | sim         | 0                  |
-| dataCriacao     | data/hora                     | sim         | 2025-08-27 14:30   |
-| dataAtualizacao | data/hora                     | sim         | 2025-08-27 15:10   |
+## 9.2 Campos por Entidade
 
-### Paciente
-| Campo           | Tipo                          | Obrigatório | Exemplo            |
-|-----------------|-------------------------------|-------------|--------------------|
-| id              | número                        | sim         | 1                  |
-| nome            | texto                         | sim         | "João Moreira"     |
-| numFicha        | número                        | sim         | 12                 |
-| prioridade      | char                          | sim         | 'U' | 'N'          |
-| dataEntrada     | data/hora                     | sim         | 2025-08-27 09:15   |
-| status          | texto                         | sim         | "Aguardando"       |
-| dataAtendimento | data/hora                     | não         | 2025-08-27 09:50   |
+### Entidade: usuario
+
+| Campo             | Tipo        | Obrigatório | Exemplo                                       |
+| ----------------- | ----------- | ----------- | --------------------------------------------- |
+| id                | SERIAL      | sim         | 1                                             |
+| nome              | TEXT        | sim         | "Ana Pires"                                   |
+| email             | TEXT UNIQUE | sim         | "[ana@hospital.com](mailto:ana@hospital.com)" |
+| senha\_hash       | TEXT        | sim         | "\$2a\$10\$..."                               |
+| papel             | SMALLINT    | sim         | 0 (recepcionista)                             |
+| data\_criacao     | TIMESTAMP   | sim         | 2025-08-27 14:30                              |
+| data\_atualizacao | TIMESTAMP   | sim         | 2025-08-27 15:10                              |
+
+### Entidade: paciente
+
+| Campo             | Tipo      | Obrigatório | Exemplo          |
+| ----------------- | --------- | ----------- | ---------------- |
+| id                | SERIAL    | sim         | 1                |
+| nome              | TEXT      | sim         | "João Moreira"   |
+| num\_ficha        | INTEGER   | sim         | 12               |
+| prioridade        | CHAR(1)   | sim         | 'U'              |
+| data\_entrada     | TIMESTAMP | sim         | 2025-08-27 09:15 |
+| status            | TEXT      | sim         | "Aguardando"     |
+| data\_atendimento | TIMESTAMP | não         | 2025-08-27 09:50 |
+| criado\_por       | INT (FK)  | sim         | 1                |
+| atualizado\_por   | INT (FK)  | não         | 1                |
+| fila\_id          | INT (FK)  | sim         | 1                |
+
+### Entidade: fila\_atendimento
+
+| Campo            | Tipo      | Obrigatório | Exemplo          |
+| ---------------- | --------- | ----------- | ---------------- |
+| id               | SERIAL    | sim         | 1                |
+| tamanho          | INTEGER   | sim         | 7                |
+| ult\_atualizacao | TIMESTAMP | sim         | 2025-08-27 09:20 |
 
 
-### Fila de Atendimento
-| Campo           | Tipo               | Obrigatório | Exemplo                 |
-|-----------------|--------------------|-------------|-------------------------|
-| id              | número             | sim         | 1                       |
-| pacientes       | lista (Array JS)   | sim         | [Paciente1, Paciente2,…]|
-| tamanho         | número             | sim         | 7                       |
-| ultAtualizacao  | data/hora          | sim         | 2025-08-27 09:20        |
+## 9.3 Relações
+
+* Um **usuario (recepcionista)** cadastra muitos **pacientes** (1→N).
+* Um **paciente** é cadastrado por um único **usuario** (N→1).
+* Uma **fila\_atendimento** contém muitos **pacientes** (1→N).
+* Um **paciente** pertence a uma única **fila\_atendimento** (N→1).
 
 
-### 9.3 Relações entre entidades
-- Um Usuário (recepcionista) pode cadastrar muitos Pacientes (1→N).
-- Um Paciente é cadastrado por um único Usuário (N→1).
-- Uma Fila de Atendimento contém muitos Pacientes (1→N).
-- Um Paciente pertence a uma única Fila de Atendimento (N→1).
+## 9.4 Modelagem em SQL (PostgreSQL)
+
+-- Tabela: usuario
+CREATE TABLE usuario (
+  id SERIAL PRIMARY KEY,
+  nome TEXT NOT NULL,
+  email TEXT NOT NULL UNIQUE,
+  senha_hash TEXT NOT NULL,
+  papel SMALLINT NOT NULL CHECK (papel IN (0,1)), -- 0=recepcionista, 1=medico
+  data_criacao TIMESTAMP NOT NULL DEFAULT now(),
+  data_atualizacao TIMESTAMP NOT NULL DEFAULT now()
+);
+
+-- Tabela: fila_atendimento
+CREATE TABLE fila_atendimento (
+  id SERIAL PRIMARY KEY,
+  tamanho INTEGER NOT NULL DEFAULT 0,
+  ult_atualizacao TIMESTAMP NOT NULL DEFAULT now()
+);
+
+-- Tabela: paciente
+CREATE TABLE paciente (
+  id SERIAL PRIMARY KEY,
+  nome TEXT NOT NULL,
+  num_ficha INTEGER NOT NULL,
+  prioridade CHAR(1) NOT NULL CHECK (prioridade IN ('U','N')),
+  data_entrada TIMESTAMP NOT NULL DEFAULT now(),
+  status TEXT NOT NULL DEFAULT 'Aguardando',
+  data_atendimento TIMESTAMP,
+  criado_por INT NOT NULL REFERENCES usuario(id),
+  atualizado_por INT REFERENCES usuario(id),
+  fila_id INT NOT NULL REFERENCES fila_atendimento(id)
+);
+
+-- Inserindo usuários de teste
+INSERT INTO usuario (nome, email, senha_hash, papel) VALUES
+('Ana Pires', 'ana@hospital.com', 'hash123', 0),
+('Dr. Carlos', 'carlos@hospital.com', 'hash456', 1);
+
+-- Inserindo fila inicial
+INSERT INTO fila_atendimento (tamanho) VALUES (0);
+
+-- Inserindo pacientes de teste
+INSERT INTO paciente (nome, num_ficha, prioridade, criado_por, fila_id)
+VALUES
+('João Moreira', 12, 'U', 1, 1),
+('Maria Souza', 13, 'N', 1, 1),
+('Pedro Lima', 14, 'U', 1, 1);
+```
