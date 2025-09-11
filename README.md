@@ -147,10 +147,10 @@ Back-end (API): Node.js com Express.js (para a criação da API RESTful) Banco d
 
 ## 9.3 Relações
 
-* Um **usuario (recepcionista)** cadastra muitos **pacientes** (1→N).
-* Um **paciente** é cadastrado por um único **usuario** (N→1).
-* Uma **fila\_atendimento** contém muitos **pacientes** (1→N).
-* Um **paciente** pertence a uma única **fila\_atendimento** (N→1).
+- Um usuario (recepcionista) cadastra muitos pacientes (1→N).
+- Um paciente** é cadastrado por um único usuario (N→1).
+- Uma fila\_atendimento** contém muitos pacientes (1→N).
+- Um paciente** pertence a uma única fila\_atendimento (N→1).
 
 
 ## 9.4 Modelagem em SQL (PostgreSQL)
