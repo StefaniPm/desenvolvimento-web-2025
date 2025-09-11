@@ -79,7 +79,7 @@ Critérios de aceite:
 ![alt text](image-2.png)
 
 ## 8) Tecnologias
-<!-- Liste apenas o que você REALMENTE pretende usar agora. -->
+
 
 ### 8.1 Navegador
 Navegador: HTML/CSS/JS | Vue.js (para o front-end interativo) Armazenamento local (se usar): LocalStorage (para armazenamento de sessões ou dados temporários) Hospedagem: Netlify ou Vercel (para deploy rápido da aplicação front-end)
@@ -105,9 +105,6 @@ Back-end (API): Node.js com Express.js (para a criação da API RESTful) Banco d
 - Fila de Atendimento → representa a fila dinâmica de pacientes aguardando atendimento, organizada pela prioridade das fichas (U e N)
 
 ### 9.2 Campos por entidade
-
-
-## 9.2 Campos por Entidade
 
 ### Entidade: usuario
 
