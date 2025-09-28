@@ -1,0 +1,20 @@
+{
+  "name": "trabalho-final",
+  "version": "1.0.0",
+  "description": "Recepcionistas e médicos em hospitais e unidades de saúde têm dificuldade em organizar a ordem de atendimento quando pacientes urgentes e não urgentes estão misturados. Isso pode causar atendimentos desordenados, aumento do tempo de espera para casos críticos e risco á vida humana.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StefaniPm/desenvolvimento-web-2025.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StefaniPm/desenvolvimento-web-2025/issues"
+  },
+  "homepage": "https://github.com/StefaniPm/desenvolvimento-web-2025#readme"
+}

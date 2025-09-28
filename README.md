@@ -90,7 +90,7 @@ Front-end (servidor): Vue.js com Vue Router e Tailwind CSS (para estilização r
 
 
 ### 8.3 Back-end (API/servidor, se existir)
-Back-end (API): Node.js com Express.js (para a criação da API RESTful) Banco de dados: PostgreSQL (para armazenamento de dados de pedidos, veículos, motoristas e status) Deploy do back-end: Heroku ou Render (para deploy de aplicações Node.js com banco de dados PostgreSQL)
+Back-end (API): Node.js com Express.js (para a criação da API RESTful) Banco de dados: PostgreSQL (para armazenamento de dados) Deploy do back-end: Heroku ou Render (para deploy de aplicações Node.js com banco de dados PostgreSQL)
 
 
 ## 9) Plano de Dados (Dia 0) — somente itens 1–3
