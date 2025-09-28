@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/StefaniPm/desenvolvimento-web-2025/issues"
   },
-  "homepage": "https://github.com/StefaniPm/desenvolvimento-web-2025#readme"
+  "homepage": "https://github.com/StefaniPm/desenvolvimento-web-2025#readme",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
 }
