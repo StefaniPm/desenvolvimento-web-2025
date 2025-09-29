@@ -1,6 +1,7 @@
 import { Pool } from "pg";
 import dotenv from "dotenv";
 dotenv.config();
+console.log("Senha lida do .env:", process.env.PGPASSWORD);
 
 const pool = new Pool({
   host: process.env.PGHOST,
