@@ -1,45 +1,117 @@
+// server.js
 import express from "express";
+import { pool } from "./db.js";
 
 const app = express();
 app.use(express.json());
 
-// rota de saúde
-app.get("/health", (req, res) => res.json({ status: "ok" }));
+/* ============================
+   ROTAS PARA USUÁRIOS
+============================ */
 
-// mini API de tarefas em memória (sem banco ainda)
-const tasks = []; // [{id, title, done}]
-let nextId = 1;
-
-app.get("/tasks", (req, res) => res.json(tasks));
-
-app.post("/tasks", (req, res) => {
-    const { title } = req.body;
-    if (!title) return res.status(400).json({ error: "title é obrigatório" });
-
-    const task = { id: nextId++, title, done: false };
-    tasks.push(task);
-    res.status(201).json(task);
+// Listar todos os usuários
+app.get("/usuarios", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM usuario ORDER BY id DESC");
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao listar usuários" });
+  }
 });
 
-app.patch("/tasks/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const task = tasks.find(t => t.id === id);
-    if (!task) return res.status(404).json({ error: "não encontrada" });
-
-    if (typeof req.body.done === "boolean") task.done = req.body.done;
-    if (typeof req.body.title === "string") task.title = req.body.title;
-
-    res.json(task);
+// Criar novo usuário
+app.post("/usuarios", async (req, res) => {
+  try {
+    const { nome, email, senha_hash, papel } = req.body;
+    const result = await pool.query(
+      `INSERT INTO usuario (nome, email, senha_hash, papel)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [nome, email, senha_hash, papel]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao criar usuário" });
+  }
 });
 
-app.delete("/tasks/:id", (req, res) => {
-    const id = Number(req.params.id);
-    const i = tasks.findIndex(t => t.id === id);
-    if (i === -1) return res.status(404).json({ error: "não encontrada" });
+/* ============================
+   ROTAS PARA FILA_ATENDIMENTO
+============================ */
 
-    tasks.splice(i, 1);
-    res.status(204).send();
+// Listar filas
+app.get("/filas", async (req, res) => {
+  try {
+    const result = await pool.query(
+      "SELECT * FROM fila_atendimento ORDER BY id ASC"
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao listar filas" });
+  }
+});
+
+// Criar fila
+app.post("/filas", async (req, res) => {
+  try {
+    const { tamanho } = req.body;
+    const result = await pool.query(
+      `INSERT INTO fila_atendimento (tamanho)
+       VALUES ($1)
+       RETURNING *`,
+      [tamanho || 0]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao criar fila" });
+  }
+});
+
+/* ============================
+   ROTAS PARA PACIENTES
+============================ */
+
+// Listar pacientes
+app.get("/pacientes", async (req, res) => {
+  try {
+    const result = await pool.query(
+      `SELECT p.*, u.nome AS criado_por_nome, f.tamanho AS tamanho_fila
+       FROM paciente p
+       JOIN usuario u ON p.criado_por = u.id
+       JOIN fila_atendimento f ON p.fila_id = f.id
+       ORDER BY p.id DESC`
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao listar pacientes" });
+  }
+});
+
+// Criar paciente
+app.post("/pacientes", async (req, res) => {
+  try {
+    const { nome, num_ficha, prioridade, criado_por, fila_id } = req.body;
+
+    const result = await pool.query(
+      `INSERT INTO paciente (nome, num_ficha, prioridade, criado_por, fila_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING *`,
+      [nome, num_ficha, prioridade, criado_por, fila_id]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao criar paciente" });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`API rodando em http://localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(`API rodando em http://localhost:${PORT}`)
+);
