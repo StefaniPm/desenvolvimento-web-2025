@@ -1,12 +1,13 @@
 {
   "name": "trabalho-final",
   "version": "1.0.0",
-  "description": "Recepcionistas e médicos em hospitais e unidades de saúde têm dificuldade em organizar a ordem de atendimento quando pacientes urgentes e não urgentes estão misturados. Isso pode causar atendimentos desordenados, aumento do tempo de espera para casos críticos e risco á vida humana.",
+  "description": "Recepcionistas e médicos em hospitais e unidades de saúde têm dificuldade em organizar a ordem de atendimento quando pacientes urgentes e não urgentes estão misturados. Isso pode causar atendimentos desordenados, aumento do tempo de espera para casos críticos e risco à vida humana.",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "reset-database": "node src/commands/reset-database.js"
   },
   "repository": {
     "type": "git",
